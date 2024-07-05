@@ -1,5 +1,5 @@
 "use strict";
-// Importa el modelo de datos 'Role'
+
 import Role from "../models/role.model.js";
 // Importa el modelo de datos 'User'
 import User from "../models/user.model.js";

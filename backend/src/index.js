@@ -1,3 +1,5 @@
+"use strict";
+
 // Importa el archivo 'configEnv.js' para cargar las variables de entorno
 import { PORT, HOST, PASS_SECRET } from "./config/configEnv.js";
 // Importa el módulo 'cors' para agregar los cors
@@ -30,10 +32,11 @@ async function setupServer() {
       secret: `${PASS_SECRET}`,
       resave: false,
       saveUninitialized: false,
+      cookie: { secure: false, httpOnly: true }
     }));
 
     // Agregamos los cors
-    app.use(cors({ credentials: true, origin: true }));
+    app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
     // Agrega el middleware para el manejo de datos en formato URL
     app.use(urlencoded({ extended: true }));
     // Agrega el middleware para el manejo de datos en formato JSON

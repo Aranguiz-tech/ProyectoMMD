@@ -1,10 +1,12 @@
+"use strict";
+
 // Importa el modelo de datos 'User'
-import User from '../models/user.model.js';
-import Role from '../models/role.model.js';
+import User from "../models/user.model.js";
+import Role from "../models/role.model.js";
 
 export async function getUser(req, res) {
     try {
-        const rutUser = req.query.rut;
+        const rutUser = req.params.rut;
 
         if (!rutUser) {
             res.status(400).json({
@@ -14,20 +16,20 @@ export async function getUser(req, res) {
             return;
         }
 
-        const user = await User.findOne({rut: rutUser});
+        const user = await User.findOne({ rut: rutUser });
 
-        if(!user){
+        if (!user) {
             res.status(404).json({
                 message: "Usuario no encontrado",
                 data: null
-            })
+            });
             return;
         }
 
         res.status(200).json({
             message: "Usuario encontrado!",
             data: user
-        })
+        });
     } catch (error) {
         console.log("Error en user.controller.js -> getUser(): ", error);
         res.status(500).json({ message: error.message });
@@ -49,7 +51,7 @@ export async function getUsers(req, res) {
 
 export async function updateUser(req, res) {
     try {
-        const rutUser = req.query.rut;
+        const rutUser = req.params.rut;
         const updatedData = req.body;
 
         if (!rutUser) {
@@ -102,7 +104,7 @@ export async function updateUser(req, res) {
 
 export async function deleteUser(req, res) {
     try {
-        const rutUser = req.query.rut;
+        const rutUser = req.params.rut;
         if (!rutUser) {
             res.status(400).json({
                 message: "El parámetro 'rut' es requerido.",

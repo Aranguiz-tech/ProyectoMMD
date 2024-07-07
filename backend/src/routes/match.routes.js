@@ -13,7 +13,7 @@ import { isAuthenticated } from "../middlewares/auth.middleware.js";
 const router = Router();
 
 // Define las rutas para los matches
-router.get("/:userId", isAuthenticated, getMatches);
 router.get("/", isAuthenticated, getAllMatches);
+router.get("/:userId", isAuthenticated, getMatches);
 
 export default router;

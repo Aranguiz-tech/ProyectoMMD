@@ -16,9 +16,9 @@ const router = Router();
 
 // Define las rutas para los usuarios
 router.get("/", isAuthenticated, isAdmin, getUsers);
-router.get("/1", isAuthenticated, isAdmin, getUser);
-router.put("/", isAuthenticated, isAdmin, updateUser);
-router.delete("/", isAuthenticated, isAdmin, deleteUser);
+router.get("/:rut", isAuthenticated, isAdmin, getUser);
+router.put("/:rut", isAuthenticated, isAdmin, updateUser);
+router.delete("/:rut", isAuthenticated, isAdmin, deleteUser);
 
 // Rutas para likes y dislikes
 router.post("/like", isAuthenticated, likeUser);

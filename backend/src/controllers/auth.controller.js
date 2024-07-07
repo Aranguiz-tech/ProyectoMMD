@@ -52,7 +52,13 @@ export async function register(req, res) {
     try {
         const userData = req.body;
 
+        // Verifica que el correo sea institucional
+        if (!userData.email.endsWith('@alumnos.ubiobio.cl')) {
+            return res.status(400).json({ message: "El correo electrónico debe ser institucional (@alumnos.ubiobio.cl)." });
+        }
+
         const existingUser = await User.findOne({ email: userData.email });
+
 
         if (existingUser) {
             return res.status(400).json({ message: "El correo electrónico ya está registrado." });
@@ -82,7 +88,39 @@ export async function register(req, res) {
         res.status(500).json({ message: "Error interno del servidor." });
     }
 }
+export async function registerAdmin(req, res) {
+    try {
+        const userData = req.body;
 
+        const existingUser = await User.findOne({ email: userData.email });
+
+        if (existingUser) {
+            return res.status(400).json({ message: "El correo electrónico ya está registrado." });
+        }
+
+        const adminRole = await Role.findOne({ name: 'administrador' });
+        if (!adminRole) {
+            return res.status(500).json({ message: "Error al asignar el rol de administrador." });
+        }
+
+        const newAdmin = new User({
+            username: userData.username,
+            email: userData.email,
+            rut: userData.rut,
+            password: await User.encryptPassword(userData.password),
+            roles: [adminRole._id]
+        });
+        await newAdmin.save();
+
+        res.status(201).json({ 
+            message: "Administrador registrado exitosamente",
+            data: newAdmin
+        });
+    } catch (error) {
+        console.log("Error en auth.controller.js -> registerAdmin():", error);
+        res.status(500).json({ message: "Error interno del servidor." });
+    }
+}
 export async function profile(req, res) {
     try{
 

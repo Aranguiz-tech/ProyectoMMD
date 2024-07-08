@@ -4,7 +4,7 @@
 import { Router } from "express";
 
 /** Controlador de like */
-import { likeUser } from "../controllers/like.controller.js";
+import { likeUser, getLikes, getAllUsersWhoLiked } from "../controllers/like.controller.js";
 
 /** Middlewares de autorización */
 import { isAuthenticated } from "../middlewares/auth.middleware.js";
@@ -14,5 +14,7 @@ const router = Router();
 
 // Define las rutas para los likes
 router.post("/like", isAuthenticated, likeUser);
+router.get("/likes/:userId", isAuthenticated, getLikes);
+router.get("/all-likes", isAuthenticated, getAllUsersWhoLiked);
 
 export default router;

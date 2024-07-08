@@ -1,4 +1,5 @@
 "use strict";
+
 import Match from '../models/match.model.js';
 import User from '../models/user.model.js';
 

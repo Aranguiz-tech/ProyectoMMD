@@ -1,9 +1,22 @@
-import { Schema, model } from 'mongoose';
+"use strict";
 
-const likeSchema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  likedUser: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-}, { versionKey: false });
+import mongoose from 'mongoose';
 
-const Like = model('Like', likeSchema);
+const likeSchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    likedUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+}, {
+    versionKey: false
+});
+
+const Like = mongoose.model('Like', likeSchema);
+
 export default Like;

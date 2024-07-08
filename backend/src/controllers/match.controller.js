@@ -1,44 +1,81 @@
-// Importa el modelo de datos 'User'
-import User from "../models/user.model.js";
+"use strict";
+import Match from '../models/match.model.js';
+import User from '../models/user.model.js';
 
-// Función para obtener todos los matches
+// Obtener todos los matches
 export const getAllMatches = async (req, res) => {
-  try {
-    const users = await User.find({}).populate("matches", "username");
+    try {
+        const matches = await Match.find()
+            .populate('user1', 'username')
+            .populate('user2', 'username');
 
-    let matches = [];
+        const formattedMatches = matches.reduce((unique, match) => {
+            const isDuplicate = unique.some((m) =>
+                (m.user1.id === match.user1._id.toString() && m.user2.id === match.user2._id.toString()) ||
+                (m.user1.id === match.user2._id.toString() && m.user2.id === match.user1._id.toString())
+            );
 
-    users.forEach(user => {
-      user.matches.forEach(match => {
-        if (match.matches.includes(user._id) && !matches.some(m => (m.user1 === user.username && m.user2 === match.username) || (m.user1 === match.username && m.user2 === user.username))) {
-          matches.push({
-            user1: user.username,
-            user2: match.username
-          });
-        }
-      });
-    });
+            if (!isDuplicate) {
+                unique.push({
+                    message: `${match.user1.username} y ${match.user2.username} tienen un match`,
+                    user1: {
+                        id: match.user1._id,
+                        username: match.user1.username
+                    },
+                    user2: {
+                        id: match.user2._id,
+                        username: match.user2.username
+                    }
+                });
+            }
 
-    res.status(200).json({ matches });
-  } catch (error) {
-    res.status(500).json({ message: "Error en el servidor", error });
-  }
+            return unique;
+        }, []);
+
+        res.status(200).json({ matches: formattedMatches });
+    } catch (error) {
+        console.error("Error en getAllMatches: ", error);
+        res.status(500).json({ message: "Error en el servidor", error: error.message });
+    }
 };
 
-// Función para obtener los matches de un usuario específico
+// Obtener los matches de un usuario específico
 export const getMatches = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const user = await User.findById(userId).populate("matches", "username");
+    try {
+        const { userId } = req.params;
 
-    if (!user) {
-      return res.status(404).json({ message: "Usuario no encontrado" });
+        const matches = await Match.find({
+            $or: [{ user1: userId }, { user2: userId }]
+        })
+            .populate('user1', 'username')
+            .populate('user2', 'username');
+
+        const formattedMatches = matches.reduce((unique, match) => {
+            const isDuplicate = unique.some((m) =>
+                (m.user1.id === match.user1._id.toString() && m.user2.id === match.user2._id.toString()) ||
+                (m.user1.id === match.user2._id.toString() && m.user2.id === match.user1._id.toString())
+            );
+
+            if (!isDuplicate) {
+                unique.push({
+                    message: `${match.user1.username} y ${match.user2.username} tienen un match`,
+                    user1: {
+                        id: match.user1._id,
+                        username: match.user1.username
+                    },
+                    user2: {
+                        id: match.user2._id,
+                        username: match.user2.username
+                    }
+                });
+            }
+
+            return unique;
+        }, []);
+
+        res.status(200).json({ matches: formattedMatches });
+    } catch (error) {
+        console.error("Error en getMatches: ", error);
+        res.status(500).json({ message: "Error en el servidor", error: error.message });
     }
-
-    const matches = user.matches.filter(match => match.matches.includes(user._id));
-
-    res.status(200).json({ matches });
-  } catch (error) {
-    res.status(500).json({ message: "Error en el servidor", error });
-  }
 };

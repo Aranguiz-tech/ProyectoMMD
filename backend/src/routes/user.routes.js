@@ -5,9 +5,6 @@ import { Router } from "express";
 /** Controlador de usuarios */
 import { getUser, getUsers, updateUser, deleteUser } from "../controllers/user.controller.js";
 
-/** Controlador de likes y dislikes */
-import { likeUser, dislikeUser } from "../controllers/like.controller.js";
-
 /** Middlewares de autorización */
 import { isAuthenticated, isAdmin } from "../middlewares/auth.middleware.js";
 
@@ -19,9 +16,5 @@ router.get("/", isAuthenticated, isAdmin, getUsers);
 router.get("/:rut", isAuthenticated, isAdmin, getUser);
 router.put("/:rut", isAuthenticated, isAdmin, updateUser);
 router.delete("/:rut", isAuthenticated, isAdmin, deleteUser);
-
-// Rutas para likes y dislikes
-router.post("/like", isAuthenticated, likeUser);
-router.post("/dislike", isAuthenticated, dislikeUser);
 
 export default router;

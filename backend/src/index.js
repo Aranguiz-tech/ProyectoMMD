@@ -36,7 +36,7 @@ async function setupServer() {
     }));
 
     // Agregamos los cors
-    app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+    app.use(cors({ credentials: true, origin: 'http://localhost:3001' }));
     // Agrega el middleware para el manejo de datos en formato URL
     app.use(urlencoded({ extended: true }));
     // Agrega el middleware para el manejo de datos en formato JSON

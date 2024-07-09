@@ -55,7 +55,7 @@ export const likeUser = async (req, res) => {
             }
         }
 
-        res.status(200).json({ message: "Usuario liked exitosamente" });
+        res.status(200).json({ message: "Usuario dió like exitosamente" });
     } catch (error) {
         res.status(500).json({ message: "Error en el servidor", error: error.message });
     }

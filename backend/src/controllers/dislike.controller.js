@@ -52,7 +52,7 @@ export const dislikeUser = async (req, res) => {
             await dislikedUser.save();
         }
 
-        res.status(200).json({ message: "Usuario disliked exitosamente" });
+        res.status(200).json({ message: "Usuario dió disliked exitosamente" });
     } catch (error) {
         res.status(500).json({ message: "Error en el servidor", error: error.message });
     }

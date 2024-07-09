@@ -18,7 +18,7 @@ export const getAllMatches = async (req, res) => {
 
             if (!isDuplicate) {
                 unique.push({
-                    message: `${match.user1.username} y ${match.user2.username} tienen un match`,
+                    message: `${match.user1.username} y ${match.user2.username} hicieron match`,
                     user1: {
                         id: match.user1._id,
                         username: match.user1.username
@@ -59,7 +59,7 @@ export const getMatches = async (req, res) => {
 
             if (!isDuplicate) {
                 unique.push({
-                    message: `${match.user1.username} y ${match.user2.username} tienen un match`,
+                    message: `${match.user1.username} y ${match.user2.username} hicieron match`,
                     user1: {
                         id: match.user1._id,
                         username: match.user1.username

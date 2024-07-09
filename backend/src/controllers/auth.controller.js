@@ -141,7 +141,7 @@ export async function profile(req, res) {
 
 export function logout(req, res) {
     try {
-        if (req.session) {
+        if (req.session && req.session.user) {
             req.session.destroy((err) => {
                 if (err) {
                     console.log("Error al cerrar sesión:", err);
@@ -152,7 +152,7 @@ export function logout(req, res) {
                 }
             });
         } else {
-            res.status(200).json({ message: "No hay ninguna sesión activa para cerrar" });
+            res.status(400).json({ message: "No hay ninguna sesión activa para cerrar" });
         }
     } catch (error) {
         console.log("Error en auth.controller.js -> logout():", error);

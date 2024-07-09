@@ -16,7 +16,9 @@ export async function getUser(req, res) { //obtener usuario por rut
             return;
         }
 
-        const user = await User.findOne({ rut: rutUser }).select('username email _id');
+        const user = await User.findOne({ rut: rutUser });
+
+
 
         if (!user) {
             res.status(404).json({
@@ -38,7 +40,8 @@ export async function getUser(req, res) { //obtener usuario por rut
 
 export async function getUsers(req, res) { //obtener usuarios
     try {
-        const users = await User.find().select('username email _id').populate('roles', 'name');
+        const users = await User.find().populate('roles', 'name');
+
 
         res.status(200).json({
             message: "Lista de usuarios",
@@ -82,7 +85,8 @@ export async function updateUser(req, res) { //actualizar usuario
         if (updatedData.password) {
             updatedData.password = await User.encryptPassword(updatedData.password);
         }
-        const userMod = await User.findOneAndUpdate({ rut: rutUser }, updatedData, { new: true }).select('username email _id roles');
+        const userMod = await User.findOneAndUpdate({ rut: rutUser }, updatedData, { new: true });
+
 
 
         if (!userMod) {
@@ -115,7 +119,8 @@ export async function deleteUser(req, res) { //borrar usuario
             return;
         }
 
-        const user = await User.findOneAndDelete({ rut: rutUser }).select('username email _id');
+        const user = await User.findOneAndDelete({ rut: rutUser });
+
 
 
         if (!user) {

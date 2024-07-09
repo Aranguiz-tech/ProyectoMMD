@@ -1,8 +1,8 @@
 "use strict";
 
-import Role from "../models/role.model.js";
 // Importa el modelo de datos 'User'
 import User from "../models/user.model.js";
+import Role from "../models/role.model.js";
 
 export async function login(req, res) {
     try {
@@ -17,7 +17,6 @@ export async function login(req, res) {
                 message: "El correo electrónico es incorrecto"
             });
         }
-
 
         const matchPassword = await User.comparePassword(
             user.password,
@@ -59,11 +58,15 @@ export async function register(req, res) {
 
         const existingUser = await User.findOne({ email: userData.email });
 
-
         if (existingUser) {
             return res.status(400).json({ message: "El correo electrónico ya está registrado." });
         }
 
+        const existingRUT = await User.findOne({ rut: userData.rut });
+
+        if (existingRUT) {
+            return res.status(400).json({ message: "El RUT ya está registrado." });
+        }
 
         const userRole = await Role.findOne({ name: 'usuario' });
         if (!userRole) {
@@ -80,14 +83,14 @@ export async function register(req, res) {
         await newUser.save();
 
         res.status(201).json({ 
-            message: "Usuario registrado exitosamente",
-            data: newUser
+            message: "Usuario registrado exitosamente"
         });
     } catch (error) {
         console.log("Error en auth.controller.js -> register():", error);
-        res.status(500).json({ message: "Error interno del servidor." });
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 }
+
 export async function registerAdmin(req, res) {
     try {
         const userData = req.body;
@@ -96,6 +99,12 @@ export async function registerAdmin(req, res) {
 
         if (existingUser) {
             return res.status(400).json({ message: "El correo electrónico ya está registrado." });
+        }
+
+        const existingRUT = await User.findOne({ rut: userData.rut });
+
+        if (existingRUT) {
+            return res.status(400).json({ message: "El RUT ya está registrado." });
         }
 
         const adminRole = await Role.findOne({ name: 'administrador' });
@@ -113,35 +122,34 @@ export async function registerAdmin(req, res) {
         await newAdmin.save();
 
         res.status(201).json({ 
-            message: "Administrador registrado exitosamente",
-            data: newAdmin
+            message: "Administrador registrado exitosamente"
         });
     } catch (error) {
         console.log("Error en auth.controller.js -> registerAdmin():", error);
-        res.status(500).json({ message: "Error interno del servidor." });
+        res.status(500).json({ message: "Error interno del servidor" });
     }
 }
-export async function profile(req, res) {
-    try{
 
+export async function profile(req, res) {
+    try {
         const data = req.session.user;
     
-        if(!data) {
+        if (!data) {
             return res.status(400).json({
                 message: "Se debe iniciar sesión!"
-            })
+            });
         }
 
         res.status(200).json(data);
     } catch (error) {
-        console.log("Error en auth.controller.js -> profile():", error);
+        console.log("Error en auth.controller.js -> profile(): ", error);
         res.status(500).json({ message: "Error interno del servidor" });
     }
 }
 
 export function logout(req, res) {
     try {
-        if (req.session && req.session.user) {
+        if (req.session) {
             req.session.destroy((err) => {
                 if (err) {
                     console.log("Error al cerrar sesión:", err);
@@ -152,7 +160,7 @@ export function logout(req, res) {
                 }
             });
         } else {
-            res.status(400).json({ message: "No hay ninguna sesión activa para cerrar" });
+            res.status(200).json({ message: "No hay ninguna sesión activa para cerrar" });
         }
     } catch (error) {
         console.log("Error en auth.controller.js -> logout():", error);

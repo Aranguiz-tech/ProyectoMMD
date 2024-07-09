@@ -1,5 +1,5 @@
 "use strict";
-
+//organiza todas las rutas de tu API, redirigiendo las solicitudes a los controladores adecuados
 // Importa el modulo 'express' para crear las rutas
 import { Router } from "express";
 

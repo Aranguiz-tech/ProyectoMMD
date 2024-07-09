@@ -4,7 +4,7 @@
 import User from "../models/user.model.js";
 import Role from "../models/role.model.js";
 
-export async function getUser(req, res) {
+export async function getUser(req, res) { //obtener usuario por rut
     try {
         const rutUser = req.params.rut;
 
@@ -16,7 +16,7 @@ export async function getUser(req, res) {
             return;
         }
 
-        const user = await User.findOne({ rut: rutUser });
+        const user = await User.findOne({ rut: rutUser }).select('username email _id');
 
         if (!user) {
             res.status(404).json({
@@ -36,9 +36,10 @@ export async function getUser(req, res) {
     }
 }
 
-export async function getUsers(req, res) {
+export async function getUsers(req, res) { //obtener usuarios
     try {
-        const users = await User.find().populate('roles', 'name');
+        const users = await User.find().select('username email _id').populate('roles', 'name');
+
         res.status(200).json({
             message: "Lista de usuarios",
             data: users
@@ -49,7 +50,7 @@ export async function getUsers(req, res) {
     }
 }
 
-export async function updateUser(req, res) {
+export async function updateUser(req, res) { //actualizar usuario
     try {
         const rutUser = req.params.rut;
         const updatedData = req.body;
@@ -81,7 +82,8 @@ export async function updateUser(req, res) {
         if (updatedData.password) {
             updatedData.password = await User.encryptPassword(updatedData.password);
         }
-        const userMod = await User.findOneAndUpdate({ rut: rutUser }, updatedData, { new: true });
+        const userMod = await User.findOneAndUpdate({ rut: rutUser }, updatedData, { new: true }).select('username email _id roles');
+
 
         if (!userMod) {
             res.status(404).json({
@@ -102,7 +104,7 @@ export async function updateUser(req, res) {
     }
 }
 
-export async function deleteUser(req, res) {
+export async function deleteUser(req, res) { //borrar usuario
     try {
         const rutUser = req.params.rut;
         if (!rutUser) {
@@ -113,7 +115,8 @@ export async function deleteUser(req, res) {
             return;
         }
 
-        const user = await User.findOneAndDelete({ rut: rutUser });
+        const user = await User.findOneAndDelete({ rut: rutUser }).select('username email _id');
+
 
         if (!user) {
             return res.status(404).json({

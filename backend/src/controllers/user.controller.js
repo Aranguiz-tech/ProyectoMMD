@@ -16,9 +16,9 @@ export async function getUser(req, res) { //obtener usuario por rut
             return;
         }
 
-        const user = await User.findOne({ rut: rutUser });
-
-
+        const user = await User.findOne({ rut: rutUser })
+            //.populate('roles', 'name') // cambiar en frontend
+            .select('username rut email roles likes dislikes matches'); // Selecciona solo los campos necesarios
 
         if (!user) {
             res.status(404).json({
@@ -40,8 +40,9 @@ export async function getUser(req, res) { //obtener usuario por rut
 
 export async function getUsers(req, res) { //obtener usuarios
     try {
-        const users = await User.find().populate('roles', 'name');
-
+        const users = await User.find()
+            //.populate('roles', 'name') //esto me servirá en el frontend
+            .select('username rut email'); // Selecciona solo los campos necesarios
 
         res.status(200).json({
             message: "Lista de usuarios",
@@ -85,9 +86,8 @@ export async function updateUser(req, res) { //actualizar usuario
         if (updatedData.password) {
             updatedData.password = await User.encryptPassword(updatedData.password);
         }
-        const userMod = await User.findOneAndUpdate({ rut: rutUser }, updatedData, { new: true });
-
-
+        const userMod = await User.findOneAndUpdate({ rut: rutUser }, updatedData, { new: true })
+            .select('username rut email roles likes dislikes matches'); // Selecciona solo los campos necesarios
 
         if (!userMod) {
             res.status(404).json({
@@ -119,9 +119,8 @@ export async function deleteUser(req, res) { //borrar usuario
             return;
         }
 
-        const user = await User.findOneAndDelete({ rut: rutUser });
-
-
+        const user = await User.findOneAndDelete({ rut: rutUser })
+            .select('username rut email roles'); // Selecciona solo los campos necesarios
 
         if (!user) {
             return res.status(404).json({
